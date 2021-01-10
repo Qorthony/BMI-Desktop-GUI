@@ -6,15 +6,53 @@ root = Tk()
 root.title("BMI Apps")
 root.resizable(False, False)
 
+def open_w_alert(message):
+    """
+    Membuka child window
+    """
+    w_alert = Toplevel(root)
+    w_alert.title("Error")
+
+    nilai_msg = StringVar()
+    lbl_msg = Label(w_alert, textvariable=nilai_msg)
+    lbl_msg.grid(row=0, column=2)
+    nilai_msg.set(message)
+
+    btn_ok = Button(w_alert, text="Ok", command=w_alert.destroy)
+    btn_ok.grid(row=1, column=3)
+
+def validate_input():
+    """
+    memvalidasi seluruh inputan 
+    """
+    status=False
+    if nilai_nama.get()=="":
+        open_w_alert("Nama tidak boleh kosong!")
+    elif nilai_usia.get()=="":
+        open_w_alert("Usia tidak boleh kosong!")
+    elif nilai_tinggi.get()=="":
+        open_w_alert("Tinggi tidak boleh kosong!")
+    elif int(nilai_tinggi.get())<=0:
+        open_w_alert("Tinggi harus bernilai lebih dari 0")
+    elif nilai_berat.get()=="":
+        open_w_alert("Berat tidak boleh kosong!")
+    elif int(nilai_berat.get())<=0:
+        open_w_alert("Berat harus bernilai lebih dari 0")
+    else:
+        status=True
+    
+    return status
+
 def calc_BMI():
     """
-    Hitung BMI
+    Hitung BMI jika input valid
     """
-    tinggi_cm = int(nilai_tinggi.get())
-    tinggi_m = tinggi_cm/100
-    berat = int(nilai_berat.get())
-    nilai_BMI = berat/(tinggi_m**2)
-    lbl_nilai_hasil["text"] = round(nilai_BMI, 2)
+    if validate_input():
+        tinggi_cm = int(nilai_tinggi.get())
+        tinggi_m = tinggi_cm/100
+        berat = int(nilai_berat.get())
+        nilai_BMI = berat/(tinggi_m**2)
+        lbl_nilai_hasil["text"] = round(nilai_BMI, 2)
 
 def reset():
     """
@@ -22,9 +60,11 @@ def reset():
     """
     ent_nama.delete(0, 'end')
     ent_usia.delete(0, 'end')
-    ent_tinggi.delete(0, 'end')
-    ent_berat.delete(0, 'end')
+    ent_tinggi.setvar(value=0)
+    ent_berat.setvar(value=0)
     lbl_nilai_hasil["text"] = 0
+
+
 
 #declare frame
 frm_header = Frame(root)
@@ -58,12 +98,14 @@ rd_jk_p = Radiobutton(master=frm_input, text="Perempuan", variable=v, value="2")
 
 
 #declare entry
-nilai_tinggi = StringVar()
-nilai_berat = StringVar()
+nilai_nama = StringVar()
+nilai_usia = StringVar()
+nilai_tinggi = StringVar(value=0)
+nilai_berat = StringVar(value=0)
 
-ent_nama = Entry(master=frm_input)
-ent_usia = Entry(master=frm_input)
-ent_tinggi = Entry(master=frm_input,textvariable=nilai_tinggi)
+ent_nama = Entry(master=frm_input, textvariable=nilai_nama)
+ent_usia = Entry(master=frm_input, textvariable=nilai_usia)
+ent_tinggi = Entry(master=frm_input,textvariable=nilai_tinggi, )
 ent_berat = Entry(master=frm_input,textvariable=nilai_berat)
 
 #declare button
